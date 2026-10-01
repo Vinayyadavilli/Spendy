@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: spent-tracker-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 43200
+      - key: DATABASE_URL
+        fromDatabase:
+          name: spent-tracker-db
+          property: connectionString
+
+databases:
+  - name: spent-tracker-db
+    databaseName: spent_tracker_db
+    user: spent_user
+    plan: free
