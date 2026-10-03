@@ -22,8 +22,10 @@ class Settings(BaseSettings):
         env_url = os.getenv("DATABASE_URL")
         if env_url:
             if env_url.startswith("postgres://"):
-                env_url = env_url.replace("postgres://", "postgresql://", 1)
-            elif env_url.startswith("mysql://"):
+                env_url = env_url.replace("postgres://", "postgresql+psycopg2://", 1)
+            elif env_url.startswith("postgresql://") and not env_url.startswith("postgresql+"):
+                env_url = env_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+            elif env_url.startswith("mysql://") and not env_url.startswith("mysql+"):
                 env_url = env_url.replace("mysql://", "mysql+pymysql://", 1)
             return env_url
 
