@@ -2,7 +2,7 @@ import logging
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from sqlalchemy import text
+from sqlalchemy import text, inspect
 from .core.config import settings
 from .core.database import Base, engine, get_db, check_db_connection
 from .routers import auth, bank_accounts, transactions, sms_parser
@@ -56,8 +56,7 @@ def health_check(db: Session = Depends(get_db)):
     is_ok, msg = check_db_connection()
     table_count = 0
     try:
-        result = db.execute(text("SHOW TABLES;")).fetchall()
-        table_count = len(result)
+        table_count = len(inspect(engine).get_table_names())
     except Exception:
         pass
 
